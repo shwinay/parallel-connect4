@@ -41,7 +41,7 @@ func playTwoPlayer(board [][]int) int {
 	return otherPlayer
 }
 
-func endGame(board [][]int, player int) {
+func endGame(board [][]int, player int, wasTwoPlayer bool) {
 	printBoard(board)
 	fmt.Println()
 	if player == BLANK {
@@ -49,6 +49,10 @@ func endGame(board [][]int, player int) {
 		fmt.Println("Winner: everyone :)")
 	} else {
 		fmt.Println("CONNECT 4!")
-		fmt.Println("Winner: Player", player)
+		if !wasTwoPlayer && player == PLAYER2 {
+			fmt.Println("Winner: Minimax AI!")
+		} else {
+			fmt.Println("Winner: Player", player)
+		}
 	}
 }

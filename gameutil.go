@@ -158,3 +158,18 @@ func isWin(board [][]int, player int) bool {
 
 	return false
 }
+
+func copyBoard(board [][]int) [][]int {
+	newBoard := make([][]int, len(board))
+	for i := 0; i < len(newBoard); i++ {
+		newBoard[i] = make([]int, len(board[i]))
+	}
+
+	for i := 0; i < len(board); i++ {
+		for j := 0; j < len(board[i]); j++ {
+			newBoard[i][j] = board[i][j]
+		}
+	}
+
+	return newBoard
+}
