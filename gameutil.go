@@ -173,3 +173,12 @@ func copyBoard(board [][]int) [][]int {
 
 	return newBoard
 }
+
+// //returns a copy of slice from i inclusive to j exclusive
+// func copySlice(src []int, i, j int) []int {
+// 	myCopy := make([]int, j-i)
+// 	for index := i; index < j; index++ {
+// 		myCopy[index-i] = src[index]
+// 	}
+// 	return myCopy
+// }

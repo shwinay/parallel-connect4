@@ -1,7 +1,7 @@
 package main
 
 func main() {
-	board := initBoard(8, 8)
+	board := initBoard(7, 6)
 	winner := playAI(board)
 	endGame(board, winner, false)
 }
