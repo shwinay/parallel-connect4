@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math"
 	"math/rand"
+	"time"
 )
 
 //MaxDepth : maximum depth of minimax search
@@ -161,8 +162,15 @@ func playAI(board [][]int) int {
 			player = PLAYER2
 			otherPlayer = PLAYER1
 		} else {
+			start := time.Now()
+
 			aiCol, _ := sMinimax(board, PLAYER2, MaxDepth)
+
+			end := time.Now()
+			elapsed := end.Sub(start).Nanoseconds() / 1000000
+
 			fmt.Println("AI dropped piece in column", aiCol)
+			fmt.Println("Move time:", elapsed)
 			if !insertPiece(board, aiCol, player) {
 				return BLANK
 			}

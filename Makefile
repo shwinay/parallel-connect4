@@ -1,0 +1,2 @@
+makeprogram:
+	go run *.go
