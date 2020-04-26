@@ -8,7 +8,7 @@ import (
 )
 
 //MaxDepth : maximum depth of minimax search
-const MaxDepth = 8
+const MaxDepth = 6
 
 //static evaluation of a board state - checks wins, losses
 //two full and two empties, and 3 full and 1 empty for every
@@ -140,6 +140,76 @@ func sMinimax(board [][]int, player, depth int) (int, int) {
 	}
 }
 
+//minimax AI - returns (maxMove, maxValue)
+func sAlphaBeta(board [][]int, player, depth, alpha, beta int) (int, int) {
+
+	//terminal states
+	if isWin(board, PLAYER2) {
+		return 0, math.MaxInt32
+	} else if isWin(board, PLAYER1) {
+		return 0, math.MinInt32
+	} else if boardFull(board) { //draw
+		return 0, 0
+	} else if depth <= 0 { //static evaluation function, depth limit reached
+		return -1, stateHeuristic(board, player)
+	}
+
+	if player == PLAYER2 { //maximizing agent - AI
+		bestMove := rand.Intn(len(board[0]))
+		maxVal := math.MinInt32
+		//simulate dropping piece into column i
+		for i := 0; i < len(board[0]); i++ {
+			newBoard := copyBoard(board)
+			if !insertPiece(newBoard, i, player) {
+				continue
+			}
+			_, val := sAlphaBeta(newBoard, PLAYER1, depth-1, alpha, beta)
+
+			if val > maxVal {
+				bestMove = i
+				maxVal = val
+			}
+
+			if maxVal > alpha {
+				alpha = maxVal
+			}
+			if beta <= alpha {
+				//fmt.Println("pruning branch..")
+				break
+			}
+		}
+		return bestMove, maxVal
+	} else if player == PLAYER1 { //minimizing agent - human player
+		bestMove := rand.Intn(len(board[0]))
+		minVal := math.MaxInt32
+		//simulate dropping piece into column i
+		for i := 0; i < len(board[0]); i++ {
+			newBoard := copyBoard(board)
+			if !insertPiece(newBoard, i, player) {
+				continue
+			}
+			_, val := sAlphaBeta(newBoard, PLAYER2, depth-1, alpha, beta)
+			if val < minVal {
+				bestMove = i
+				minVal = val
+			}
+
+			if beta < minVal {
+				beta = minVal
+			}
+			if beta <= alpha {
+				//fmt.Println("pruning branch..")
+				break
+			}
+
+		}
+		return bestMove, minVal
+	} else {
+		fmt.Println("not minimizing or maximizing agent.. this should never happen")
+		return -1, -1
+	}
+}
+
 func randomAI(board [][]int) int {
 	return rand.Intn(len(board[0]))
 }
@@ -167,7 +237,7 @@ func playAI(board [][]int) int {
 		} else {
 			start := time.Now()
 
-			aiCol, _ := pMinimax(board, PLAYER2, MaxDepth)
+			aiCol, _ := sMinimax(board, PLAYER2, MaxDepth)
 
 			end := time.Now()
 			elapsed := end.Sub(start).Nanoseconds() / 1000000
