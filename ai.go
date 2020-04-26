@@ -8,8 +8,11 @@ import (
 )
 
 //MaxDepth : maximum depth of minimax search
-const MaxDepth = 6
+const MaxDepth = 8
 
+//static evaluation of a board state - checks wins, losses
+//two full and two empties, and 3 full and 1 empty for every
+//4-space window on the board
 func stateHeuristic(board [][]int, player int) int {
 	score := 0
 
@@ -164,7 +167,7 @@ func playAI(board [][]int) int {
 		} else {
 			start := time.Now()
 
-			aiCol, _ := sMinimax(board, PLAYER2, MaxDepth)
+			aiCol, _ := pMinimax(board, PLAYER2, MaxDepth)
 
 			end := time.Now()
 			elapsed := end.Sub(start).Nanoseconds() / 1000000

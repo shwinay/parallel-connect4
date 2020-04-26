@@ -18,6 +18,7 @@ const PLAYER2 = 2
 
 var au aurora.Aurora
 
+//return a zero-filled board
 func initBoard(width, height int) [][]int {
 	var colors = flag.Bool("colors", true, "enable or disable colors")
 	au = aurora.NewAurora(*colors)
@@ -28,6 +29,7 @@ func initBoard(width, height int) [][]int {
 	return board
 }
 
+//print board
 func printBoard(board [][]int) {
 	//print row numbers
 	for i := 0; i < len(board[0]); i++ {
@@ -52,6 +54,7 @@ func printBoard(board [][]int) {
 	}
 }
 
+//insert piece into board
 func insertPiece(board [][]int, col, piece int) bool {
 	row := len(board) - 1
 	for row >= 0 && board[row][col] != 0 {
@@ -65,6 +68,7 @@ func insertPiece(board [][]int, col, piece int) bool {
 	return true
 }
 
+//checks if the board is full
 func boardFull(board [][]int) bool {
 	for i := 0; i < len(board); i++ {
 		for j := 0; j < len(board[i]); j++ {
@@ -76,6 +80,7 @@ func boardFull(board [][]int) bool {
 	return true
 }
 
+//check if a board is a win for a given player
 func isWin(board [][]int, player int) bool {
 	checkRow := func(board [][]int, row, player int) bool {
 		count := 0
@@ -147,7 +152,7 @@ func isWin(board [][]int, player int) bool {
 		}
 	}
 
-	//TODO: CHECK DIAGONALS
+	//check diagonals
 	for i := 0; i < len(board); i++ {
 		for j := 0; j < len(board[i]); j++ {
 			if checkDiagonals(board, i, j, player) {
@@ -159,6 +164,7 @@ func isWin(board [][]int, player int) bool {
 	return false
 }
 
+//function to copy a given board
 func copyBoard(board [][]int) [][]int {
 	newBoard := make([][]int, len(board))
 	for i := 0; i < len(newBoard); i++ {
@@ -173,12 +179,3 @@ func copyBoard(board [][]int) [][]int {
 
 	return newBoard
 }
-
-// //returns a copy of slice from i inclusive to j exclusive
-// func copySlice(src []int, i, j int) []int {
-// 	myCopy := make([]int, j-i)
-// 	for index := i; index < j; index++ {
-// 		myCopy[index-i] = src[index]
-// 	}
-// 	return myCopy
-// }
