@@ -174,7 +174,6 @@ func sAlphaBeta(board [][]int, player, depth, alpha, beta int) (int, int) {
 				alpha = maxVal
 			}
 			if beta <= alpha {
-				//fmt.Println("pruning branch..")
 				break
 			}
 		}
@@ -198,7 +197,6 @@ func sAlphaBeta(board [][]int, player, depth, alpha, beta int) (int, int) {
 				beta = minVal
 			}
 			if beta <= alpha {
-				//fmt.Println("pruning branch..")
 				break
 			}
 
@@ -237,7 +235,7 @@ func playAI(board [][]int) int {
 		} else {
 			start := time.Now()
 
-			aiCol, _ := sMinimax(board, PLAYER2, MaxDepth)
+			aiCol, _ := pAlphaBeta(board, PLAYER2, MaxDepth)
 
 			end := time.Now()
 			elapsed := end.Sub(start).Nanoseconds() / 1000000

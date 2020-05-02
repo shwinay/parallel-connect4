@@ -6,18 +6,7 @@ import (
 	"math/rand"
 )
 
-//delete bestMove in result struct??
-
-//Result struct for goroutines
-type Result struct {
-	bestMove int
-	val      int
-	col      int
-}
-
-//this implementation simply makes a goroutine for the initial
-//branch of moves, and then waits on the results
-func pMinimax(board [][]int, player, depth int) (int, int) {
+func pAlphaBeta(board [][]int, player, depth int) (int, int) {
 	//terminal states
 	if isWin(board, PLAYER2) {
 		return 0, math.MaxInt32
@@ -42,7 +31,7 @@ func pMinimax(board [][]int, player, depth int) (int, int) {
 			if !insertPiece(newBoard, i, player) {
 				continue
 			}
-			go pBranchMinimax(newBoard, PLAYER1, depth-1, resultChan, i)
+			go pBranchAlphaBeta(newBoard, PLAYER1, depth-1, math.MinInt32, math.MaxInt32, resultChan, i)
 			numBranches++
 		}
 
@@ -55,31 +44,13 @@ func pMinimax(board [][]int, player, depth int) (int, int) {
 		}
 
 		return bestMove, maxVal
-	} else if player == PLAYER1 { //minimizing agent - human player
-		bestMove := rand.Intn(len(board[0]))
-		minVal := math.MaxInt32
-		//simulate dropping piece into column i
-		for i := 0; i < len(board[0]); i++ {
-			newBoard := copyBoard(board)
-			if !insertPiece(newBoard, i, player) {
-				continue
-			}
-			_, val := sMinimax(newBoard, PLAYER2, depth-1)
-			if val < minVal {
-				bestMove = i
-				minVal = val
-			}
-		}
-		return bestMove, minVal
 	} else {
 		fmt.Println("not minimizing or maximizing agent.. this should never happen")
 		return -1, -1
 	}
 }
 
-//minimax AI - returns (maxMove, maxValue). Used for the initial branches of the parallel
-//minimax algorithm. Only difference between this and sMinimax is the waitgroup
-func pBranchMinimax(board [][]int, player, depth int, resultChan chan Result, col int) {
+func pBranchAlphaBeta(board [][]int, player, depth, alpha, beta int, resultChan chan Result, col int) {
 
 	//terminal states
 	if isWin(board, PLAYER2) {
@@ -101,7 +72,7 @@ func pBranchMinimax(board [][]int, player, depth int, resultChan chan Result, co
 			if !insertPiece(newBoard, i, player) {
 				continue
 			}
-			_, val := sMinimax(newBoard, PLAYER1, depth-1)
+			_, val := sAlphaBeta(newBoard, PLAYER1, depth-1, alpha, beta)
 
 			if val > maxVal {
 				bestMove = i
@@ -118,7 +89,7 @@ func pBranchMinimax(board [][]int, player, depth int, resultChan chan Result, co
 			if !insertPiece(newBoard, i, player) {
 				continue
 			}
-			_, val := sMinimax(newBoard, PLAYER2, depth-1)
+			_, val := sAlphaBeta(newBoard, PLAYER2, depth-1, alpha, beta)
 			if val < minVal {
 				bestMove = i
 				minVal = val
